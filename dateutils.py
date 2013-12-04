@@ -1,4 +1,5 @@
-from datetime import timedelta, datetime
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 DURATIONS=["year", "month", "day", "hour", "minute"]
@@ -11,14 +12,17 @@ def _relevant_durations(duration):
 
 
 def construct_relevant_date(dt, duration):
-    return datetime(*(getattr(dt, d) for d in _relevant_durations(duration)))
+    args = [getattr(dt, d) for d in _relevant_durations(duration)]
+    args += [1] * (3 - len(args))
+    return datetime(*args)
 
 
 def date_iterator(start, end, duration):
     start =  construct_relevant_date(start, duration) # zero out irrelevant parts
     end = construct_relevant_date(end, duration)
     curr = start
-    delta = timedelta(**{duration + "s": 1})
+    delta = relativedelta(**{duration + "s": 1})
+    yield curr
     while curr < end:
-        yield curr
         curr += delta
+        yield curr

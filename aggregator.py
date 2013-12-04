@@ -23,10 +23,10 @@ class Aggregator(object):
                 self.end_date = max(self.end_date, d['time'])
 
     def print_stats(self):
+        print "Stats from %s to %s" % (self.start_date, self.end_date)
         for key, stats in groupby(sorted(self.stats.iteritems()),
                                   key=lambda (k, v): (k.target, k.owner, k.duration)):
             target, owner, duration = key
-            print
             print "%s's %ss by %s" % (owner, target, duration or "all time")
             curr_key, curr_val = stats.next()
             if duration:  #if there is a duration
