@@ -29,7 +29,7 @@ class Aggregator(object):
             target, owner, duration = key
             print "%s's %ss by %s" % (owner, target, duration or "all time")
             curr_key, curr_val = stats.next()
-            if duration:  #if there is a duration
+            if duration:
                 for d in date_iterator(self.start_date, self.end_date, duration):
                     if curr_key.time == d:
                         print curr_val,
