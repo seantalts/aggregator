@@ -4,7 +4,7 @@ from dateutils import DURATIONS, construct_relevant_date
 
 
 TYPES=("follow", "favorite", "order")
-Key = namedtuple("Stat", ['target', 'owner', 'duration', 'time'])
+Key = namedtuple("Key", ['target', 'owner', 'duration', 'time'])
 
 
 def _count_type(t):
@@ -20,6 +20,7 @@ class Field(object):
 
     TARGET_FINDERS={t: _count_type(t) for t in TYPES}
     TARGET_FINDERS["total"] = lambda d: d['total'] if 'total' in d else 0
+    TARGET_FINDERS['under 100'] = lambda d: 1 if 'total' in d and d['total'] < 100 else 0
     #Add more finders here when needed
 
     def __init__(self, field_string):
