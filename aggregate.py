@@ -2,8 +2,9 @@
 """
 import argparse
 from datetime import datetime
-import utils
-from field import Field, date_iterator
+import funcutils
+from field import Field
+from dateutils import date_iterator
 from collections import defaultdict
 from itertools import groupby
 try:
@@ -69,10 +70,7 @@ class Aggregator(object):
                                   key=lambda (k, v): (k.target, k.owner, k.duration)):
             target, owner, duration = key
             print
-            print "%s's %ss by %s" % (
-                owner,
-                target,
-                duration or "all time")
+            print "%s's %ss by %s" % (owner, target, duration or "all time")
             curr_key, curr_val = stats.next()
             if duration:  #if there is a duration
                 for d in date_iterator(self.start_date, self.end_date, duration):
@@ -91,7 +89,7 @@ class Aggregator(object):
 if __name__ == "__main__":
     args = parse_args()
     aggregator = Aggregator(args.field)
-    line_parser = utils.and_then(json.loads, convert_timestamp)
+    line_parser = funcutils.and_then(json.loads, convert_timestamp)
     for r in iterate_records(args.filename, line_parser):
         aggregator.add(r)
     aggregator.print_stats()

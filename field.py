@@ -1,31 +1,10 @@
 """Field module for specifying fields to aggregate"""
 from collections import namedtuple
-from datetime import timedelta, datetime
+from dateutils import DURATIONS, construct_relevant_date
 
 
-Key = namedtuple("Stat", ['target', 'owner', 'duration', 'time'])
-DURATIONS=["year", "month", "day", "hour", "minute"]
 TYPES=("follow", "favorite", "order")
-
-
-def _relevant_durations(duration):
-    #it's important to use all the parts of a date larger than the target duration
-    #in order to identify the duration uniquely
-    return DURATIONS[:DURATIONS.index(duration) + 1]
-
-
-def _construct_relevant_date(dt, duration):
-    return datetime(*(getattr(dt, d) for d in _relevant_durations(duration)))
-
-
-def date_iterator(start, end, duration):
-    start =  _construct_relevant_date(start, duration) # zero out irrelevant parts
-    end = _construct_relevant_date(end, duration)
-    curr = start
-    delta = timedelta(**{duration + "s": 1})
-    while curr < end:
-        yield curr
-        curr += delta
+Key = namedtuple("Stat", ['target', 'owner', 'duration', 'time'])
 
 
 def _count_type(t):
@@ -58,8 +37,6 @@ class Field(object):
             self.owner = parts[2]
 
         self.value = self.TARGET_FINDERS[self.target]
-        if self.duration:
-            self.durations = _relevant_durations(self.duration)
 
     @staticmethod
     def _get_time(dict_, duration):
@@ -69,7 +46,7 @@ class Field(object):
     def _find_time(self, d):
         if not self.duration:
             return "all time"
-        return _construct_relevant_date(d['time'], self.duration)
+        return construct_relevant_date(d['time'], self.duration)
 
     def _find_owner(self, d):
         return self.owner + ": " + str(d[self.owner])
