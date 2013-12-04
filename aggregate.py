@@ -45,8 +45,6 @@ def iterate_records(filename, line_parser=json.loads):
         yield line_parser(line)
 
 
-
-
 if __name__ == "__main__":
     args = parse_args()
     aggregator = Aggregator(args.field)

@@ -22,7 +22,6 @@ class Field(object):
     TARGET_FINDERS["total"] = lambda d: d['total'] if 'total' in d else 0
     #Add more finders here when needed
 
-
     def __init__(self, field_string):
         parts = field_string.split("/")
         assert len(parts) == 2 or len(parts) == 3, "Fields must have 2 or 3 parts."
@@ -64,4 +63,3 @@ def test_target_finder():
     follow_finder = Field.TARGET_FINDERS["follow"]
     assert follow_finder({"type": "follow"}) == 1
     assert follow_finder({"type": "favorite"}) == 0
-
